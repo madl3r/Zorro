@@ -35,7 +35,7 @@ public class Follow : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		origMaxSpeed = Random.Range(3f, 5.2f);
+		origMaxSpeed = Random.Range(4f, 5.2f);
 		followPtDisplace = Random.Range(-0.5f, 0.5f);
 		actualFollowPoint = new Vector3(toFollow.transform.position.x + followPtDisplace, toFollow.transform.position.y, toFollow.transform.position.z);
 		jumpWaitTime = Random.Range(0.1f, 2f);
@@ -60,11 +60,25 @@ public class Follow : MonoBehaviour {
 			jumpWaitTime = Random.Range(0.3f, 2f);
 		}
 
-
 		//Follow Point and Speed Calculations
 		actualFollowPoint = new Vector3(toFollow.transform.position.x + followPtDisplace, toFollow.transform.position.y, toFollow.transform.position.z);
 		currentSpeed = Mathf.Min(Mathf.Abs(actualFollowPoint.x  -  transform.position.x) * 2.5f, origMaxSpeed);
 
+		//Used to be in fixed update
+		//If parent is close enough stop annealing and follow!
+		if ((actualFollowPoint - transform.position).magnitude < 1)
+		{
+			seriousGapBuisinessTime = false;
+			
+			if (!following)
+			{
+				following = true;
+				isAnnealing = false;
+				//Move a little faster the first frame that we meet the parent
+				FollowPoint();
+				FollowPoint();
+			}
+		}
 
 
 		//Checking if Idle
@@ -79,7 +93,7 @@ public class Follow : MonoBehaviour {
 		if (Time.time - timeOfLastMove > idleWaitTime)
 		{
 			isIdle = true;
-			Debug.Log("Is IDLE");
+//			Debug.Log("Is IDLE");
 		}
 		else
 		{
@@ -89,23 +103,17 @@ public class Follow : MonoBehaviour {
 		//Setting the previous x position
 		prevX = transform.position.x;
 
-
-		if (transform.position.y < -50)
+		//Kill if low enough
+		if (transform.position.y < -100)
 		{
 			Debug.Log("Die");
 			Destroy(gameObject);
 		}
-
-		//maxSpeed = Mathf.Min(Mathf.Abs(toFollow.transform.position.x  -  transform.position.x) * 2.5f, origMaxSpeed);
-
-		//Jump sometimes
-
-		//Definitely jump if the player has jumped (if the difference in y is enough between this transform and the other one)
 	}
 
 	void FixedUpdate()
 	{
-
+		//Movement
 
 		//things to do while we're in the air
 		//Always if not grounded float downwards slightly
@@ -115,6 +123,10 @@ public class Follow : MonoBehaviour {
 			checkIsGrounded();
 		}
 
+
+
+
+
 		//If we're idle and far enough away try to move bakcwards a bit and then go back to following.
 		if(isIdle && (actualFollowPoint - transform.position).magnitude > 2 && !isAnnealing)
 		{
@@ -122,24 +134,10 @@ public class Follow : MonoBehaviour {
 			following = false;
 			isAnnealing = true;
 			annealingTime = Random.Range(0.3f, 1.3f);
-			Debug.Log("WHERE'S MOMMA FREAK OUT!");
+//			Debug.Log("WHERE'S PARENT FREAK OUT!");
 		}
 
-		//If parent is close enough stop annealing and just 
-		if ((actualFollowPoint - transform.position).magnitude < 1)
-		{
-			seriousGapBuisinessTime = false;
-
-			if (!following)
-			{
-				following = true;
-				isAnnealing = false;
-				//Move a little faster the first frame that we meet the parent
-				FollowPoint();
-				FollowPoint();
-			}
-		}
-
+	
 
 		//IF FOLLOWING~~~~
 		//~~~~~~~~~~~~~~~~
@@ -203,16 +201,17 @@ public class Follow : MonoBehaviour {
 		if (overGap && grounded)
 		{
 			Debug.Log("Trying to jump the gap");
-			//seriousGapBuisinessTime = false;
 			Jump(jumpForce);
+			seriousGapBuisinessTime = true;
 		}
 		else if(overGap && !grounded && !seriousGapBuisinessTime)
 		{
-			annealingTime = Random.Range(0.8f, 1.0f);
+			annealingTime = Random.Range(0.8f, 1.0f);//(0.3f, 0.5f);
 			following = false;
 			isAnnealing = true;
 			seriousGapBuisinessTime = true;
 		}
+
 
 	}
 
