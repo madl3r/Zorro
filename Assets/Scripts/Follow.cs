@@ -41,7 +41,7 @@ public class Follow : MonoBehaviour {
 		jumpWaitTime = Random.Range(0.1f, 2f);
 		jumpForce += Random.Range(-10, 5);
 		following = true;
-		isIdle = true;
+		isIdle = false;
 		isAnnealing = false;
 		overGap = false;
 		seriousGapBuisinessTime = false;
