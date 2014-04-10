@@ -18,11 +18,14 @@ public class Follow : MonoBehaviour {
 	private bool isAnnealing;
 	private bool overGap;
 	private bool seriousGapBuisinessTime;
+	private bool gapIsClose;
+	private bool inAirFromGap;
 
 	private float jumpWaitTime;
 	private float timeOfJump;
 	private float idleWaitTime = 2.0f; //5 seconds
 	private float timeOfLastMove;
+	private float seriousJumpWaitTime;
 
 	private float annealingTime = 1.0f;
 	private float updateWhileNotAnnealing;
@@ -45,6 +48,8 @@ public class Follow : MonoBehaviour {
 		isAnnealing = false;
 		overGap = false;
 		seriousGapBuisinessTime = false;
+		gapIsClose = false;
+		seriousJumpWaitTime = 0.21f;
 		
 	}
 	
@@ -59,6 +64,7 @@ public class Follow : MonoBehaviour {
 			wantsToJump = true;
 			jumpWaitTime = Random.Range(0.3f, 2f);
 		}
+
 
 		//Follow Point and Speed Calculations
 		actualFollowPoint = new Vector3(toFollow.transform.position.x + followPtDisplace, toFollow.transform.position.y, toFollow.transform.position.z);
@@ -149,16 +155,17 @@ public class Follow : MonoBehaviour {
 		//	Debug.Log("FOLLOWING");
 
 			//Jump!
-			if((toFollow.transform.position.y - transform.position.y  > 1.0f) && grounded && !seriousGapBuisinessTime)// && isIdle)
+			if((toFollow.transform.position.y - transform.position.y  > 1.0f) && grounded && !seriousGapBuisinessTime && (Time.time - timeOfJump > seriousJumpWaitTime))//&& !gapIsClose // && isIdle)
 			{
 				Jump(jumpForce);
-				Debug.Log("JUMPING, trying");
+				//Debug.Log("JUMPING, trying");
+				//Debug.Log(gapIsClose);
 			}
 			
-			if ((wantsToJump) && grounded && !seriousGapBuisinessTime)
+			if ((wantsToJump) && grounded && !seriousGapBuisinessTime)// && !gapIsClose)
 			{
 				Jump(Random.Range(150, 190));
-				Debug.Log("JUMPING, cute");
+				//Debug.Log("JUMPING, cute");
 			}
 		}
 
@@ -168,14 +175,14 @@ public class Follow : MonoBehaviour {
 			//while we should be running away run away
 			if (Time.time - updateWhileNotAnnealing < annealingTime)
 			{
-				Debug.Log("SHOULD BE RUNNING AWAY");
+				//Debug.Log("SHOULD BE RUNNING AWAY");
 				//Minus equals so that running away.
 				RunFromPoint();
 
 			}
 			else
 			{
-				Debug.Log("~~~~~~~RUNNING ELSE~~~~~~~");
+				//Debug.Log("~~~~~~~RUNNING ELSE~~~~~~~");
 				//Jump(jumpForce);
 				isAnnealing = false;
 				following = true;
@@ -195,6 +202,19 @@ public class Follow : MonoBehaviour {
 		//If not grounded then stop following, anneal and then move in the direction again for one jump
 		//While in the air here never anneal!
 		//If we don't make it then that sucks... :'(
+
+		//Also maybe add some other raycast and a bool "gapIsClose"
+		//If a gap is close enough turn off all follow and for fun jumping!
+		gapIsClose = !(Physics2D.Raycast(transform.position - (new Vector3 (Random.Range(-5.0f, 0.0f), transform.localScale.y / 1.99f, 0)) , -Vector2.up, 4, 1 << 10)
+		               && Physics2D.Raycast(transform.position - (new Vector3 (Random.Range(0f, 5f), transform.localScale.y / 1.99f, 0)) , -Vector2.up, 4, 1 << 10));
+
+		//If we sense a close gap reset the time so that we can't jump for funsies
+		if (gapIsClose && !isIdle)
+		{
+			//reset the want to jump times
+			timeOfJump = Time.time;
+		}
+
 		overGap = !(Physics2D.Raycast(transform.position - (new Vector3 (-(transform.localScale.x / 2f), transform.localScale.y / 1.99f, 0)) , -Vector2.up, 4, 1 << 10)
 			&& Physics2D.Raycast(transform.position - (new Vector3 ((transform.localScale.x / 2f), transform.localScale.y / 1.99f, 0)) , -Vector2.up, 4, 1 << 10));
 
@@ -210,8 +230,16 @@ public class Follow : MonoBehaviour {
 			following = false;
 			isAnnealing = true;
 			seriousGapBuisinessTime = true;
+			inAirFromGap = true;
 		}
 
+		//Smarter running back, this makes it so that when they hit the ground they don't keep going backwards
+		if(inAirFromGap && grounded && isAnnealing)
+		{
+			inAirFromGap = false;
+			isAnnealing = false;
+			following = true;
+		}
 
 	}
 

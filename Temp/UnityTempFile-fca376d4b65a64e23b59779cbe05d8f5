@@ -36,6 +36,8 @@
 -define:ENABLE_PROFILER
 -define:UNITY_EDITOR
 -define:UNITY_EDITOR_OSX
+'Assets/Scripts/CameraFollow.cs'
+'Assets/Scripts/ElevatorScript.cs'
 'Assets/Scripts/Follow.cs'
 'Assets/Scripts/PlayerMove.cs'
 -r:'/Applications/Unity/Unity.app/Contents/Frameworks/Mono/lib/mono/unity/System.Runtime.Serialization.dll'
