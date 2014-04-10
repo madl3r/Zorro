@@ -50,6 +50,10 @@
      <Compile Include="Assets\Scripts\ElevatorScript.cs" />
      <Compile Include="Assets\Scripts\Follow.cs" />
      <Compile Include="Assets\Scripts\PlayerMove.cs" />
+     <Compile Include="Assets\Scripts\spawnFlower.cs" />
+     <Compile Include="Assets\Scripts\spawnForever.cs" />
+     <Compile Include="Assets\Scripts\spawnHeart.cs" />
+     <Compile Include="Assets\Scripts\stepOnBlock.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

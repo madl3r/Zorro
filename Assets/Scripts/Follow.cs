@@ -4,6 +4,7 @@ using System.Collections;
 public class Follow : MonoBehaviour {
 
 	public GameObject toFollow;
+	public GameObject heart;
 
 	private float origMaxSpeed = 5.0f;
 	private float currentSpeed;
@@ -23,6 +24,7 @@ public class Follow : MonoBehaviour {
 
 	private float jumpWaitTime;
 	private float timeOfJump;
+	private float heartWaitTime;
 	private float idleWaitTime = 2.0f; //5 seconds
 	private float timeOfLastMove;
 	private float seriousJumpWaitTime;
@@ -50,6 +52,7 @@ public class Follow : MonoBehaviour {
 		seriousGapBuisinessTime = false;
 		gapIsClose = false;
 		seriousJumpWaitTime = 0.21f;
+		heartWaitTime = 5f;
 		
 	}
 	
@@ -64,6 +67,7 @@ public class Follow : MonoBehaviour {
 			wantsToJump = true;
 			jumpWaitTime = Random.Range(0.3f, 2f);
 		}
+
 
 
 		//Follow Point and Speed Calculations
@@ -104,6 +108,18 @@ public class Follow : MonoBehaviour {
 		else
 		{
 			isIdle = false;
+		}
+
+		//TODO REORGANIZE THIS SHIT BECAUSE THIS CLASS IS UUUGGGGGGLY!
+		//If close enough, and idle for enough time spawn some hearts, cuz cuteness!
+		if (Time.time - timeOfLastMove > idleWaitTime + heartWaitTime && (actualFollowPoint - transform.position).magnitude < 1)
+		{
+			//maybe spawn a heart
+			if (Random.Range(0, 1000) == 0)
+			{
+				GameObject theHeart = (GameObject) Instantiate(heart, transform.position, Quaternion.identity);
+				theHeart.SendMessage("lightUp");
+			}
 		}
 
 		//Setting the previous x position
