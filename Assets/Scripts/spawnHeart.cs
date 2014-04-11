@@ -12,6 +12,7 @@ public class spawnHeart : MonoBehaviour {
 	private bool spawned;
 
 	// Use this for initialization
+	// Start out with nothing visible
 	void Start () {
 		int colNum = Random.Range(0, colors.Length);
 		float yHeight = Random.Range(1.0f, 2.0f);
@@ -34,20 +35,22 @@ public class spawnHeart : MonoBehaviour {
 	void Update () {
 
 		//Kill the heart after some time;
-		// TODO, THIS IS ASSUMING THAT THE HEART LIGHTS UP AS SOON AS IT IS SPAWNED!
+		// TODO, THIS IS ASSUMING THAT THE HEART LIGHTS UP AS SOON AS IT IS SPAWNED! (In this game it always is)
 		if (Time.time - spawnTime > liveTime)
 		{
 			Destroy(gameObject);
 		}
 	}
 
+	//lights up the heart
 	void lightUp()
 	{
 		StartCoroutine("spawnThis");
 		spawnTime = Time.time;
 		spawned = true;
 	}
-	
+
+	//lights up in the order looks like an animation
 	IEnumerator spawnThis()
 	{
 		yield return new WaitForSeconds(0.005f);

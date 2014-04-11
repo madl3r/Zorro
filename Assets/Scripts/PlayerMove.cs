@@ -73,7 +73,7 @@ public class PlayerMove : MonoBehaviour {
 
 		transform.rigidbody2D.velocity = new Vector2(transform.rigidbody2D.velocity.x, Mathf.Min(transform.rigidbody2D.velocity.y, maxJumpSpeed));
 		
-
+		//Checking if the middle, left and right bottom side of the player are touching the ground.
 		grounded = Physics2D.Raycast(transform.position - (new Vector3 (0, transform.localScale.y / 1.99f, 0)) , -Vector2.up, 0.05f, 1 << 10) 
 			|| Physics2D.Raycast(transform.position - (new Vector3 (-(transform.localScale.x / 1.7f), transform.localScale.y / 1.99f, 0)) , -Vector2.up, 0.05f, 1 << 10)
 				|| Physics2D.Raycast(transform.position - (new Vector3 ((transform.localScale.x / 1.7f), transform.localScale.y / 1.99f, 0)) , -Vector2.up, 0.05f, 1 << 10);

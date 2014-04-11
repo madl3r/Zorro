@@ -8,7 +8,6 @@ public class Follow : MonoBehaviour {
 
 	private float origMaxSpeed = 5.0f;
 	private float currentSpeed;
-	//public float moveForce = 365f;	
 	private float jumpForce = 280;
 	private float followPtDisplace;
 	private Vector3 actualFollowPoint;
@@ -25,17 +24,14 @@ public class Follow : MonoBehaviour {
 	private float jumpWaitTime;
 	private float timeOfJump;
 	private float heartWaitTime;
-	private float idleWaitTime = 2.0f; //5 seconds
+	private float idleWaitTime = 1.0f; //5 seconds
 	private float timeOfLastMove;
 	private float seriousJumpWaitTime;
 
 	private float annealingTime = 1.0f;
 	private float updateWhileNotAnnealing;
-
-
 	private float prevX;
-
-
+	
 	public bool grounded;
 
 	// Use this for initialization
@@ -59,7 +55,7 @@ public class Follow : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-		//DO ALWAYS
+		//DO ALWAYS, timing doesn't matter
 
 		//Randomly jumping cuz is cute
 		if (Time.time - timeOfJump > jumpWaitTime)
@@ -67,8 +63,6 @@ public class Follow : MonoBehaviour {
 			wantsToJump = true;
 			jumpWaitTime = Random.Range(0.3f, 2f);
 		}
-
-
 
 		//Follow Point and Speed Calculations
 		actualFollowPoint = new Vector3(toFollow.transform.position.x + followPtDisplace, toFollow.transform.position.y, toFollow.transform.position.z);
@@ -103,14 +97,12 @@ public class Follow : MonoBehaviour {
 		if (Time.time - timeOfLastMove > idleWaitTime)
 		{
 			isIdle = true;
-//			Debug.Log("Is IDLE");
 		}
 		else
 		{
 			isIdle = false;
 		}
 
-		//TODO REORGANIZE THIS SHIT BECAUSE THIS CLASS IS UUUGGGGGGLY!
 		//If close enough, and idle for enough time spawn some hearts, cuz cuteness!
 		if (Time.time - timeOfLastMove > idleWaitTime + heartWaitTime && (actualFollowPoint - transform.position).magnitude < 1)
 		{
@@ -128,7 +120,6 @@ public class Follow : MonoBehaviour {
 		//Kill if low enough
 		if (transform.position.y < -100)
 		{
-			Debug.Log("Die");
 			Destroy(gameObject);
 		}
 	}
@@ -146,20 +137,13 @@ public class Follow : MonoBehaviour {
 		}
 
 
-
-
-
 		//If we're idle and far enough away try to move bakcwards a bit and then go back to following.
 		if(isIdle && (actualFollowPoint - transform.position).magnitude > 2 && !isAnnealing)
 		{
-
 			following = false;
 			isAnnealing = true;
 			annealingTime = Random.Range(0.3f, 1.3f);
-//			Debug.Log("WHERE'S PARENT FREAK OUT!");
 		}
-
-	
 
 		//IF FOLLOWING~~~~
 		//~~~~~~~~~~~~~~~~
@@ -167,39 +151,33 @@ public class Follow : MonoBehaviour {
 		{
 			isAnnealing = false;
 
+			//Actually move towrads the player
 			FollowPoint();
-		//	Debug.Log("FOLLOWING");
 
 			//Jump!
 			if((toFollow.transform.position.y - transform.position.y  > 1.0f) && grounded && !seriousGapBuisinessTime && (Time.time - timeOfJump > seriousJumpWaitTime))//&& !gapIsClose // && isIdle)
 			{
 				Jump(jumpForce);
-				//Debug.Log("JUMPING, trying");
-				//Debug.Log(gapIsClose);
 			}
 			
 			if ((wantsToJump) && grounded && !seriousGapBuisinessTime)// && !gapIsClose)
 			{
 				Jump(Random.Range(150, 190));
-				//Debug.Log("JUMPING, cute");
 			}
 		}
 
-		//Can't get to parent, so try going back a second and then continue following!
+		//Can't get to the parent, so try going back a second and then continue following!
 		if (isAnnealing && !following)
 		{
 			//while we should be running away run away
 			if (Time.time - updateWhileNotAnnealing < annealingTime)
 			{
-				//Debug.Log("SHOULD BE RUNNING AWAY");
-				//Minus equals so that running away.
+				//Run away from the player
 				RunFromPoint();
-
 			}
+			//Otherwise we're not running away, go back into follow mode
 			else
 			{
-				//Debug.Log("~~~~~~~RUNNING ELSE~~~~~~~");
-				//Jump(jumpForce);
 				isAnnealing = false;
 				following = true;
 				updateWhileNotAnnealing = Time.time;
@@ -209,34 +187,28 @@ public class Follow : MonoBehaviour {
 		{
 			updateWhileNotAnnealing = Time.time;
 		}
-		//~~~~~~~~~~~~~~~
-
-
-
-		//Now we should do smart jumping
-		//Have two raycasts, if either one returns false try jumping at full power.
-		//If not grounded then stop following, anneal and then move in the direction again for one jump
-		//While in the air here never anneal!
-		//If we don't make it then that sucks... :'(
 
 		//Also maybe add some other raycast and a bool "gapIsClose"
+		//Sends out rays, pointing down further away from the player.
 		//If a gap is close enough turn off all follow and for fun jumping!
-		gapIsClose = !(Physics2D.Raycast(transform.position - (new Vector3 (Random.Range(-5.0f, 0.0f), transform.localScale.y / 1.99f, 0)) , -Vector2.up, 4, 1 << 10)
-		               && Physics2D.Raycast(transform.position - (new Vector3 (Random.Range(0f, 5f), transform.localScale.y / 1.99f, 0)) , -Vector2.up, 4, 1 << 10));
+		gapIsClose = !(Physics2D.Raycast(transform.position - (new Vector3 (Random.Range(-5.0f, 0.0f), transform.localScale.y / 1.99f, 0)) , -Vector2.up, 20, 1 << 10)
+		               && Physics2D.Raycast(transform.position - (new Vector3 (Random.Range(0f, 5f), transform.localScale.y / 1.99f, 0)) , -Vector2.up, 20, 1 << 10));
 
 		//If we sense a close gap reset the time so that we can't jump for funsies
+		//If we're idle, then it's safe to act cutely!
 		if (gapIsClose && !isIdle)
 		{
 			//reset the want to jump times
 			timeOfJump = Time.time;
 		}
 
-		overGap = !(Physics2D.Raycast(transform.position - (new Vector3 (-(transform.localScale.x / 2f), transform.localScale.y / 1.99f, 0)) , -Vector2.up, 4, 1 << 10)
-			&& Physics2D.Raycast(transform.position - (new Vector3 ((transform.localScale.x / 2f), transform.localScale.y / 1.99f, 0)) , -Vector2.up, 4, 1 << 10));
+		//This check's if we're currently over a high gap
+		overGap = !(Physics2D.Raycast(transform.position - (new Vector3 (-(transform.localScale.x / 2f), transform.localScale.y / 1.99f, 0)) , -Vector2.up, 20, 1 << 10)
+			&& Physics2D.Raycast(transform.position - (new Vector3 ((transform.localScale.x / 2f), transform.localScale.y / 1.99f, 0)) , -Vector2.up, 20, 1 << 10));
 
 		if (overGap && grounded)
 		{
-			Debug.Log("Trying to jump the gap");
+//			Debug.Log("Trying to jump the gap");
 			Jump(jumpForce);
 			seriousGapBuisinessTime = true;
 		}
@@ -285,16 +257,9 @@ public class Follow : MonoBehaviour {
 	}
 
 
-	//Normalized so that speed is based on only the maximum speed
-	//transform.position += new Vector3(((toFollow.transform.position - transform.position).normalized.x * maxSpeed * Time.deltaTime), 0, 0);
-	
-	//X following (movement)
-	
-	//If this doesn't change in a long enough time (Probably actually a very short time) 
-	//stop following and try your own thing (if fay away then move in the opposite direction for some time and then keep following)
-	//Otherwise if close enough do some cute stuff (spawn hearts?)
 	private void FollowPoint()
 	{
+		//Normalized so that speed is based on only the maximum speed
 		transform.position += new Vector3(((actualFollowPoint - transform.position).normalized.x * currentSpeed * Time.deltaTime), 0, 0);
 	}
 	private void RunFromPoint()

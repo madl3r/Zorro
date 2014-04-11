@@ -21,7 +21,7 @@ public class ElevatorScript : MonoBehaviour {
 		
 	}
 	
-	//When the player enters the foyer close the door behind them.
+	//When the player enters the trigger start moving the elevator downwards
 	void OnTriggerEnter2D(Collider2D other) {
 		if (!started)
 		{
@@ -31,14 +31,11 @@ public class ElevatorScript : MonoBehaviour {
 	}
 	
 	//Using coroutine so that waits feel good.
-	//Lerps the door closed.
+	//Lerps the elevator downwards
 	IEnumerator ElevatorDown()
 	{
 		float i = 0;
-		Debug.Log("Entered Elevator");
 		yield return new WaitForSeconds(2f);
-
-		Debug.Log("SHOULD BE MOVING DOWN");
 
 		while(i < 1.0f)
 		{

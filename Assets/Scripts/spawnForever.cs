@@ -37,7 +37,7 @@ public class spawnForever : MonoBehaviour {
 
 	void spawnBlocks()
 	{
-		Debug.Log("Spawning More Blocks!!");
+//		Debug.Log("Spawning More Blocks!!");
 		//spawn background blocks
 		//nine blocks in the y
 		//start spawn at -19, to -35 // 380 - 404
@@ -45,6 +45,7 @@ public class spawnForever : MonoBehaviour {
 		Vector3 thePos = new Vector3(transform.position.x + 100, transform.position.y - 19, 0);
 		//Vector3 theRot = new Vector3(0, 0, 0);
 
+		//Spawn the basic land (grass underground, and next blocks trigger.
 		thePos.y -= 1;
 		Instantiate (underGroundBlock, thePos, Quaternion.identity);
 		thePos.y += 1;
@@ -64,6 +65,7 @@ public class spawnForever : MonoBehaviour {
 		//Just do that hack way ... look at which object you're spawning and add to the Y based on that.
 		// Do the x randomly each time between -48 and +48.
 
+		//Spawning background object at hights corresponding to what the objects are.
 		for (int i = 0; i < Random.Range (10, 23); i++)
 		{
 			randNum = Random.Range(0, backGroundObjects.Length);
@@ -82,42 +84,6 @@ public class spawnForever : MonoBehaviour {
 			thePos.y = prevYPos;
 			thePos.x = prevXPos;
 		}
-
-
-
-		//Spawn the background objects somewhatrandomly, at random intervals
-
-		//spawn floor blocks randomly
-		// spawn at -30
-//		for (int i = 0; i < 20; i++)
-//		{
-//			randNum = Random.Range(0, 7);
-//
-//			if (randNum > 2)
-//			{
-//				//spawn normal block at the next place
-//				//index 3
-//				randNum = 3;
-//			}
-//
-//			Instantiate(floorBlocks[randNum], thePos, Quaternion.identity);
-//			thePos.x += 1;
-////			else if (randNum == 0)
-////			{
-////				//spawn flower
-////				//index 0
-////			}
-////			else if (randNum == 1)
-////			{
-////				//spawn heart
-////				//index 1
-////			}
-////			else if (randNum == 2)
-////			{
-////				//spawn heartFlower
-////				//index 2
-////			}
-//		}
 
 	}
 }

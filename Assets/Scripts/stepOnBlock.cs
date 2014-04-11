@@ -19,6 +19,7 @@ public class stepOnBlock : MonoBehaviour {
 	void OnTriggerEnter2D(Collider2D other)
 	{
 //		Debug.Log("Triggered");
+		//Lights up the object associated with this trigger. For now only flowers.
 		parent.BroadcastMessage("lightUp");
 	}
 }

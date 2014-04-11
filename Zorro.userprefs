@@ -1,13 +1,15 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/stepOnBlock.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/Follow.cs">
     <Files>
-      <File FileName="Assets/Scripts/Follow.cs" Line="211" Column="77" />
+      <File FileName="Assets/Scripts/Follow.cs" Line="113" Column="65" />
       <File FileName="Assets/Scripts/PlayerMove.cs" Line="1" Column="1" />
       <File FileName="Assets/Scripts/CameraFollow.cs" Line="1" Column="1" />
       <File FileName="Assets/Scripts/ElevatorScript.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/spawnFlower.cs" Line="24" Column="9" />
-      <File FileName="Assets/Scripts/stepOnBlock.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/spawnFlower.cs" Line="22" Column="3" />
+      <File FileName="Assets/Scripts/stepOnBlock.cs" Line="19" Column="2" />
+      <File FileName="Assets/Scripts/spawnForever.cs" Line="71" Column="20" />
+      <File FileName="Assets/Scripts/spawnHeart.cs" Line="39" Column="4" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
